@@ -1,9 +1,8 @@
+import 'package:contacts/routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(
-    MyWidget()
-  );
+  runApp(MyWidget());
 }
 
 class MyWidget extends StatefulWidget {
@@ -16,6 +15,8 @@ class MyWidget extends StatefulWidget {
 class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return MaterialApp(
+      onGenerateRoute: onGenerateRoute,
+    );
   }
 }
