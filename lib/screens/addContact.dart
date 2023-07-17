@@ -1,26 +1,98 @@
+import 'package:contacts/models/contact.dart';
+import 'package:contacts/screens/homePage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../services/prefs.dart';
 
-class AddContact extends StatefulWidget {
+class AddContact extends StatelessWidget {
   static const String routeName = '/add';
-  const AddContact({super.key});
+  final Contacts? contact;
+  AddContact({this.contact, super.key});
 
-  @override
-  State<AddContact> createState() => _AddContactState();
-}
+  final formKey = GlobalKey<FormState>();
 
-class _AddContactState extends State<AddContact> {
   @override
   Widget build(BuildContext context) {
+    Contacts newContact =
+        contact ?? Contacts(id: -1, name: '', phoneNumber: '', email: '');
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AddContact'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AddContact.routeName);
-              },
-              icon: Icon(Icons.add))
-        ],
+      body: Form(
+        key: formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            children: [
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.length < 2) {
+                    return 'Enter name ';
+                  }
+                  newContact.name =
+                      value[0].toUpperCase() + value.substring(1).toLowerCase();
+                },
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    helperText: 'name'),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30, bottom: 30),
+                child: TextFormField(
+                  maxLength: 9,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty||value.length<9) {
+                      return 'Enter correct phoneNumber ';
+                    }
+                    newContact.phoneNumber = value;
+
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    prefixText: '+998',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      helperText: 'phoneNumber'),
+                ),
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter email ';
+                  }
+                  newContact.email = value;
+                },
+                decoration: InputDecoration(
+                
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    helperText: 'email'),
+              ),
+              SizedBox(
+                height: 400,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel')),
+                  TextButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          await addContact(newContact);
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, HomePage.routeName, (route) => false);
+                        }
+                      },
+                      child: Text('Save'))
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

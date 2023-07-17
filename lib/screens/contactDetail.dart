@@ -1,4 +1,5 @@
 import 'package:contacts/models/contact.dart';
+import 'package:contacts/screens/addContact.dart';
 import 'package:flutter/material.dart';
 import 'package:contacts/screens/homePage.dart';
 import '../services/prefs.dart';
@@ -17,6 +18,21 @@ class _ContactDetailState extends State<ContactDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AddContact.routeName);
+              },
+              icon: Icon(Icons.edit_outlined)),
+          IconButton(
+              onPressed: () async {
+                await deleteContact(widget.contact.id);
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.delete))
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.only(top: 90),
         child: Column(
@@ -27,13 +43,10 @@ class _ContactDetailState extends State<ContactDetail> {
               height: 500,
               width: 420,
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.greenAccent,
-                    child: Text(widget.contact.name[0]
-                        // [widget.index].name[0],
-                        ),
+                    child: Text(widget.contact.name[0]),
                   ),
                   Text(
                     widget.contact.name,
@@ -81,7 +94,7 @@ class _ContactDetailState extends State<ContactDetail> {
                             )),
                       )
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
