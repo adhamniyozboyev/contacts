@@ -1,9 +1,8 @@
 import 'package:contacts/models/contact.dart';
 import 'package:contacts/screens/addContact.dart';
 import 'package:flutter/material.dart';
-import 'package:contacts/screens/homePage.dart';
 import '../services/prefs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactDetail extends StatefulWidget {
   static const String routeName = '/contact';
@@ -22,7 +21,8 @@ class _ContactDetailState extends State<ContactDetail> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, AddContact.routeName);
+                Navigator.pushNamed(context, AddContact.routeName,
+                    arguments: widget.contact);
               },
               icon: Icon(Icons.edit_outlined)),
           IconButton(
@@ -69,7 +69,15 @@ class _ContactDetailState extends State<ContactDetail> {
                       CircleAvatar(
                         backgroundColor: Colors.green,
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final Uri launcher = Uri(
+                                scheme: 'tel',
+                                path: widget.contact.phoneNumber,
+                              );
+                              if (await canLaunchUrl(launcher)) {
+                                launchUrl(launcher);
+                              }
+                            },
                             icon: Icon(
                               Icons.phone,
                               color: Colors.white,
@@ -78,7 +86,14 @@ class _ContactDetailState extends State<ContactDetail> {
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final Uri launcher = Uri(
+                                  scheme: 'sms',
+                                  path: widget.contact.phoneNumber);
+                              if (await canLaunchUrl(launcher)) {
+                                launchUrl(launcher);
+                              }
+                            },
                             icon: Icon(
                               Icons.message,
                               color: Colors.white,

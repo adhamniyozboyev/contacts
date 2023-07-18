@@ -3,7 +3,8 @@ import 'package:contacts/screens/addContact.dart';
 import 'package:contacts/screens/contactDetail.dart';
 import 'package:contacts/services/prefs.dart';
 import 'package:flutter/material.dart';
-import 'package:contacts/services/prefs.dart';
+// import 'package:contacts/services/prefs.dart';
+import 'package:phone_call/phone_call.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/';
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AddContact'),
+        title: Text('Contacts'),
         actions: [
           IconButton(
               onPressed: () {
@@ -50,6 +51,14 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Color.fromARGB(255, 253, 197, 112),
                       child: Text(contacts[index].name[0])),
                   title: Text(contacts[index].name),
+                  trailing: IconButton(
+                      onPressed: () {
+                        PhoneCall.calling(contacts[index].phoneNumber);
+                      },
+                      icon: Icon(
+                        Icons.phone,
+                        color: Colors.green,
+                      )),
                 );
               });
         },
